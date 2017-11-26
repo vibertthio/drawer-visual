@@ -7,7 +7,9 @@ SyphonServer server;
 int state = 4;
 int stateLimit = 4;
 boolean usingShader = true;
-GlowManager postProduction;
+
+// universal
+MovingLines movingLines;
 
 // state: 0
 Rectangle[] recs_1;
@@ -40,9 +42,7 @@ void setup() {
 void draw() {
   pg.beginDraw();
   pg.background(0);
-  // pg.rectMode(CENTER);
-  // pg.fill(255);
-  // pg.rect(pg.width * 0.5, pg.height * 0.5, 100, 100);
+  // testDraw();
   rectanglesUpdate();
   rectanglesDraw();
   wavesDraw();
@@ -59,7 +59,6 @@ void draw() {
   pgout.resetShader();
   pgout.endDraw();
 
-  // pgout = postProduction.dowGlow(pg);
   image(pgout, 0, 0);
   server.sendImage(pgout);
 }
@@ -89,27 +88,10 @@ void shaderSetup() {
   // shade.set("sigma", 2.5);
 
   shade = loadShader("neon.glsl");
-
-  // postProduction = new GlowManager();
-  // postProduction.initGlow(this, pg, 0.25f);
-  // postProduction.blur.set("blurSize", 7);
-  // postProduction.blur.set("sigma", 3.0f);
-  // postProduction.glowShader.set("BlendMode", 0);
+  shade.set("rad", 2);
 }
 void shaderUpdate() {
-
-  // TEST
-  // float brt = map(mouseX, 0, width, 0, 0.5);
-  // int rad = (int) map(mouseY, 0, height, 0, 3);
-  // println("brt: " + brt + ", rad: " + rad);
-  // shade.set("brt", map(mouseX, 0, width, 0, 0.5));
-  // shade.set("rad", (int) map(mouseY, 0, height, 0, 3));
-
-  float brt = 0.1 + 0.1 * sin(float(millis()) / 300.0);
-  int rad = 2;
-  // println("brt: " + brt + ", rad: " + rad);
-  shade.set("brt", brt);
-  shade.set("rad", rad);
+  shade.set("time", millis());
 }
 void keyPressed() {
   if (key == 'z') {
@@ -170,6 +152,11 @@ void keyPressed() {
       lines.queue();
     }
   }
+}
+void testDraw() {
+  pg.rectMode(CENTER);
+  pg.fill(255);
+  pg.rect(pg.width * 0.5, pg.height * 0.5, 100, 100);
 }
 
 // recs
@@ -282,8 +269,11 @@ void wavesInteract() {
 void linesInit() {
   lines = new Lines(pg);
   lines.reset();
+
+  movingLines = new MovingLines(pg);
 }
 void linesDraw() {
+  movingLines.draw();
   if (state == 4) {
     lines.draw();
   }

@@ -8,6 +8,9 @@ int state = 4;
 int stateLimit = 4;
 boolean usingShader = true;
 
+// universal
+MovingLines movingLines;
+
 // state: 0
 Rectangle[] recs_1;
 boolean[] recs_1_state = { false, false };
@@ -266,8 +269,11 @@ void wavesInteract() {
 void linesInit() {
   lines = new Lines(pg);
   lines.reset();
+
+  movingLines = new MovingLines(pg);
 }
 void linesDraw() {
+  movingLines.draw();
   if (state == 4) {
     lines.draw();
   }

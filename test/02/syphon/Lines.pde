@@ -132,14 +132,15 @@ class StraightLine {
 
 class MovingLines {
   PGraphics pg;
-  int nOfL = 20;
+  int nOfL = 10;
   float[] heightOfLines;
   float gap;
   float spd = 2;
+  int count = 0;
 
   MovingLines(PGraphics _p) {
     pg = _p;
-    init(nOfL);
+    init();
   }
   void init() {
     gap = float(pg.height) / nOfL;
@@ -149,18 +150,35 @@ class MovingLines {
     }
   }
   void draw() {
-    update();
-    render();
+    if (count > 0) {
+      update();
+      render();
+      count -= 1;
+    }
   }
   void update() {
-    for (int i = 0; i < nOfL; i++) {
-      heightOfLines[i] += spd;
-      if (heightOfLines[i])
-    }
+
   }
   void render() {
     for (int i = 0; i < nOfL; i++) {
+      heightOfLines[i] += spd;
+      if (heightOfLines[i] > pg.height) {
+        heightOfLines[i] = 0;
+      } else if (heightOfLines[i] < 0) {
+        heightOfLines[i] = pg.height;
+      }
+      pg.stroke(255);
+      pg.strokeWeight(1);
+      pg.line(0, heightOfLines[i], pg.width, heightOfLines[i]);
 
     }
+  }
+
+  void trigger(int _c) {
+    count = _c;
+  }
+  void trigger(int _c, int _s) {
+    count = _c;
+    spd = _s;
   }
 }
