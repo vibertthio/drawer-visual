@@ -1,15 +1,18 @@
 import codeanticode.syphon.*;
+import themidibus.*;
 
 PGraphics pg;
 PGraphics pgout;
 PShader shade;
 SyphonServer server;
+MidiBus midi;
 int state = 4;
 int stateLimit = 4;
 boolean usingShader = true;
 
 // universal
 MovingLines movingLines;
+StaticRectangles staticRectangles;
 
 // state: 0
 Rectangle[] recs_1;
@@ -43,6 +46,7 @@ void draw() {
   pg.beginDraw();
   pg.background(0);
   // testDraw();
+  generalDraw();
   rectanglesUpdate();
   rectanglesDraw();
   wavesDraw();
@@ -75,7 +79,11 @@ void generalInit() {
   pg = createGraphics(1920, 380);
   pgout = createGraphics(1920, 380, P2D);
   server = new SyphonServer(this, "Processing Syphon");
+  midi = new MidiBus(this, "APC40 mkII", -1);
   shaderSetup();
+
+  movingLines = new MovingLines(pg);
+  staticRectangles = new StaticRectangles(pg);
 }
 void shaderSetup() {
   // shade = loadShader("blur.glsl");
@@ -93,70 +101,14 @@ void shaderSetup() {
 void shaderUpdate() {
   shade.set("time", millis());
 }
-void keyPressed() {
-  if (key == 'z') {
-    state += 1;
-    if (state > stateLimit) {
-      state = 0;
-    }
-    if (state == 1) {
-      resetRecs_2();
-    }
-    if (state == 3) {
-      wavesInteract();
-    }
-  } else if (key == ' ') {
-    println("trigger shader");
-    usingShader = !usingShader;
-  } else if (state == 0) {
-    resetRecs_1();
-    if (key == '1') {
-      recs_1[0].reset();
-      recs_1[0].start();
-    } else if (key == '2') {
-      recs_1[1].reset();
-      recs_1[1].start();
-    } else if (key == '3') {
-      recs_1[0].start();
-      recs_1_state[0] = true;
-    } else if (key == '4') {
-      recs_1[1].start();
-      recs_1_state[1] = true;
-    }
-  } else if (state == 1) {
-    if (key == '1') {
-      resetRecs_2();
-      recs_2[0].start();
-    }
-    if (key == '2') {
-      resetRecs_2();
-      recs_2[5].start();
-    }
-  } else if (state == 2) {
-    if (key == '1') {
-      recs_3[0].hdes = 2;
-    }
-    if (key == '2') {
-      recs_3[0].hdes = pg.height;
-    }
-  } else if (state == 4) {
-    if (key == '1') {
-      if (!lines.random) {
-        lines.random = true;
-      } else {
-        lines.reset();
-      }
-    } else if (key == '2') {
-      lines.glitch = !lines.glitch;
-    } else if (key == '3') {
-      lines.queue();
-    }
-  }
-}
 void testDraw() {
   pg.rectMode(CENTER);
   pg.fill(255);
   pg.rect(pg.width * 0.5, pg.height * 0.5, 100, 100);
+}
+void generalDraw() {
+  movingLines.draw();
+  staticRectangles.draw();
 }
 
 // recs
@@ -269,11 +221,8 @@ void wavesInteract() {
 void linesInit() {
   lines = new Lines(pg);
   lines.reset();
-
-  movingLines = new MovingLines(pg);
 }
 void linesDraw() {
-  movingLines.draw();
   if (state == 4) {
     lines.draw();
   }

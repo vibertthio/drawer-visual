@@ -8,17 +8,23 @@ class StaticRectangles {
     pg = _p;
     strips = new StaticRectangle[nOfStrips];
     float w = pg.width / 3.0;
-    strips[0] = new StaticRectangle(pg, 0, 0, 0);
-    strips[1] = new StaticRectangle(pg, 1, w, 0);
-    strips[2] = new StaticRectangle(pg, 2, w * 2, 0);
+    float h = pg.height;
+    strips[0] = new StaticRectangle(pg, 0, 0, 0, w, h);
+    strips[1] = new StaticRectangle(pg, 1, w, 0, w, h);
+    strips[2] = new StaticRectangle(pg, 2, w * 2, 0, w, h);
   }
-
-  public void render() {
+  public void draw() {
+    // println("draw");
+    update();
+    render();
+  }
+  void update() {
     updateSequence();
     updateComplexSequence();
     updateAsyncSequence();
     updateComplexAsyncSequence();
-
+  }
+  void render() {
     for (int i = 0; i < nOfStrips; i++) {
       strips[i].draw();
     }

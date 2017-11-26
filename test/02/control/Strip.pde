@@ -3,7 +3,8 @@ class StaticRectangle {
   int id;
   float xpos;
   float ypos;
-  float length = 300;
+  float w;
+  float h;
 
   TimeLine dimTimer;
 
@@ -30,11 +31,13 @@ class StaticRectangle {
   float dimOffEaseRatio = 0.2;
 
 
-  StaticRectangle(PGraphics _p, int _id, float _x, float _y) {
+  StaticRectangle(PGraphics _p, int _id, float _x, float _y, float _w, float _h) {
     pg = _p;
     id = _id;
     xpos = _x;
     ypos = _y;
+    w = _w;
+    h = _h;
     // xpos = width / 2 - length / 2;
     // ypos = height / 2;
 
@@ -84,10 +87,11 @@ class StaticRectangle {
   void render() {
     pg.pushMatrix();
     pg.translate(xpos, ypos);
-    pg.rectMode(CENTER);
+    pg.rectMode(CORNER);
+    // pg.rectMode(CENTER);
     pg.noStroke();
     pg.fill(255, alpha);
-    pg.rect(0, 0, 200, 200);
+    pg.rect(0, 0, w, h);
     pg.popMatrix();
   }
   void turnOn() {
