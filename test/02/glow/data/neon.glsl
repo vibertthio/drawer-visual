@@ -9,20 +9,16 @@ varying vec4 vertTexCoord;
 uniform sampler2D texture;
 uniform vec2 texOffset;
 uniform float brt;
-uniform int time;
 uniform int rad;
 
 void main(void) {
   int i = 0;
   int j = 0;
   vec4 sum = vec4(0.0);
-
-  float br = 0.1 + 0.1 * sin(float(time) / 300.0);
-
+  
   for( i=-rad;i<rad;i++) {
     for( j=-rad;j<rad;j++) {
-        // sum += texture2D( texture, vertTexCoord.st + vec2(j,i)*texOffset.st)*brt;
-        sum += texture2D( texture, vertTexCoord.st + vec2(j,i)*texOffset.st)*br;
+        sum += texture2D( texture, vertTexCoord.st + vec2(j,i)*texOffset.st)*brt;
     }
   }
 

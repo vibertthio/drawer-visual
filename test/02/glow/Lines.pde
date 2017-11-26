@@ -8,8 +8,6 @@ class Lines {
   boolean random = false;
   boolean glitch = false;
   int glitchAmt = 40;
-  float heightUpdateSpd = 0.1;
-
 
   Lines(PGraphics _p) {
     pg = _p;
@@ -40,15 +38,10 @@ class Lines {
     }
   }
   void queue() {
-    heightUpdateSpd = 0.005;
     for (int i = 0; i < nOfL; i++) {
-      // float h = (float)(pg.height * i) / nOfL;
-      float h = map(i, 0, nOfL, 0, pg.height);
-      float hdes = map(i, 0, nOfL, -0.5 * pg.height, 1.5 * pg.height);
-      lines[i].left.y = h;
-      lines[i].right.y = h;
-      lines[i].leftHeightDes = hdes;
-      lines[i].rightHeightDes = hdes;
+      float h = (float)(pg.height * i) / nOfL;
+      lines[i].leftHeightDes = h;
+      lines[i].rightHeightDes = h;
     }
   }
 }
@@ -62,6 +55,8 @@ class StraightLine {
   float rightHeightDes;
   float alpha = 255;
   float alphaTarget = 255;
+
+  // state
 
   StraightLine(Lines _l, PGraphics _p) {
     lines = _l;
@@ -116,51 +111,16 @@ class StraightLine {
   void updateHeight() {
     float ld = leftHeightDes - left.y;
     if (abs(ld) > 0.1) {
-      left.y += ld * lines.heightUpdateSpd;
+      left.y += ld * 0.1;
     } else {
       left.y = leftHeightDes;
     }
 
     float rd = rightHeightDes - right.y;
     if (abs(rd) > 0.1) {
-      right.y += rd * lines.heightUpdateSpd;
+      right.y += rd * 0.1;
     } else {
       right.y = rightHeightDes;
-    }
-  }
-}
-
-class MovingLines {
-  PGraphics pg;
-  int nOfL = 20;
-  float[] heightOfLines;
-  float gap;
-  float spd = 2;
-
-  MovingLines(PGraphics _p) {
-    pg = _p;
-    init(nOfL);
-  }
-  void init() {
-    gap = float(pg.height) / nOfL;
-    heightOfLines = new float[nOfL];
-    for (int i = 0; i < nOfL; i++) {
-      heightOfLines[i] = i * gap;
-    }
-  }
-  void draw() {
-    update();
-    render();
-  }
-  void update() {
-    for (int i = 0; i < nOfL; i++) {
-      heightOfLines[i] += spd;
-      if (heightOfLines[i])
-    }
-  }
-  void render() {
-    for (int i = 0; i < nOfL; i++) {
-
     }
   }
 }
