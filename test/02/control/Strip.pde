@@ -1,7 +1,6 @@
-class Strip {
+class StaticRectangle {
   PGraphics pg;
   int id;
-  float angle;
   float xpos;
   float ypos;
   float length = 300;
@@ -31,10 +30,9 @@ class Strip {
   float dimOffEaseRatio = 0.2;
 
 
-  Strip(PGraphics _p, int _id, float _a, float _x, float _y) {
+  StaticRectangle(PGraphics _p, int _id, float _x, float _y) {
     pg = _p;
     id = _id;
-    angle = _a;
     xpos = _x;
     ypos = _y;
     // xpos = width / 2 - length / 2;
@@ -44,7 +42,10 @@ class Strip {
     dimTimer = new TimeLine(300);
     turnOnTimer = new TimeLine(50);
   }
-
+  void draw() {
+    update();
+    render();
+  }
   void update() {
     if (dimming) {
       float ratio = 0;
@@ -80,7 +81,6 @@ class Strip {
       }
     }
   }
-
   void render() {
     pg.pushMatrix();
     pg.translate(xpos, ypos);
@@ -90,7 +90,6 @@ class Strip {
     pg.rect(0, 0, 200, 200);
     pg.popMatrix();
   }
-
   void turnOn() {
     repeatBreathing = false;
     independentControl = false;
@@ -99,7 +98,6 @@ class Strip {
     initialAlpha = 255;
     targetAlpha = 255;
   }
-
   void turnOn(int time) {
     repeatBreathing = false;
     independentControl = false;
@@ -109,18 +107,15 @@ class Strip {
     initialAlpha = alpha;
     targetAlpha = 255;
   }
-
   void turnOnEasing(int time) {
     turnOn(time);
     easeRatio = dimOnEaseRatio;
     easing = true;
   }
-
   void turnOnEasing(int time, int ratio) {
     dimOnEaseRatio = ratio;
     turnOnEasing(time);
   }
-
   void turnOff() {
     repeatBreathing = false;
     independentControl = false;
@@ -129,7 +124,6 @@ class Strip {
     initialAlpha = 0;
     targetAlpha = 0;
   }
-
   void turnOff(int time) {
     repeatBreathing = false;
     independentControl = false;
@@ -139,18 +133,15 @@ class Strip {
     initialAlpha = alpha;
     targetAlpha = 0;
   }
-
   void turnOffEasing(int time) {
     turnOff(time);
     easeRatio = dimOffEaseRatio;
     easing = true;
   }
-
   void turnOffEasing(int time, int ratio) {
     dimOffEaseRatio = ratio;
     turnOffEasing(time);
   }
-
   void turnOnFor(int time) {
     repeatBreathing = false;
     blink = true;
@@ -159,7 +150,6 @@ class Strip {
     turnOnTimer.limit = time;
     turnOnTimer.startTimer();
   }
-
   void turnOnFor(int time, int ll) {
     repeatBreathing = false;
     blink = true;
@@ -168,11 +158,11 @@ class Strip {
     turnOnTimer.limit = time;
     turnOnTimer.startTimer();
   }
-
-  // only one param here,
-  // because the length of dimming and opening
-  // must match at usual cases
   void turnOnEasingFor(int time) {
+    // only one param here,
+    // because the length of dimming and opening
+    // must match at usual cases
+
     repeatBreathing = false;
     blink = true;
     easingBlink = true;
@@ -185,12 +175,10 @@ class Strip {
   void blink() {
     turnOnFor(20);
   }
-
   void setLimit(int ll) {
     dimTimer.limit = ll;
   }
 
-  // dim 3 times
   void dimRepeat(int time, int ll) {
     alpha = 0;
     repeatBreathing = true;
@@ -202,7 +190,6 @@ class Strip {
     dimTimer.breathState = false;
     dimTimer.startTimer();
   }
-
   void dimRepeatInverse(int time, int ll) {
     alpha = 255;
     repeatBreathing = true;
@@ -214,5 +201,4 @@ class Strip {
     dimTimer.breathState = false;
     dimTimer.startTimer();
   }
-
 }
