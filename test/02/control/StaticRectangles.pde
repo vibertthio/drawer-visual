@@ -148,8 +148,8 @@ class StaticRectangles {
   int turnSequenceCount = 0;
   int turnSequenceCountLimit = 5;
   int[][] sequenceSet = {
-    { 0, 7, 8 }, // 0
-    { 3, 4, 11 },
+    { 0, 1, 2}, // 0
+    { 2, 1, 0 },
     { 0, 3, 4, 7, 8, 11 },
     { 0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11 },
     { 0, 11, 4, 8 },
@@ -217,7 +217,7 @@ class StaticRectangles {
         // int prev = (turnSequenceIndex > 0)? (turnSequenceIndex - 1) : (sequence.length - 1);
         // turnOneOn(sequence[turnSequenceIndex], turnSequenceTime);
         // turnOneOff(sequence[prev], turnSequenceTime);
-        turnOneOnFor(sequence[turnSequenceIndex], turnSequenceTime, 20);
+        turnOneOnFor(sequence[turnSequenceIndex], turnSequenceTime, 50);
         turnSequenceIndex = (turnSequenceIndex + 1) % sequence.length;
         turnSequenceCount = 0;
 
@@ -308,23 +308,15 @@ class StaticRectangles {
   boolean asyncSequenceActivate = false;
   int asyncSequenceTriggerIndex = 0;
   boolean bangAsyncSequence = false;
-  int asyncSequenceTime = 50;
+  int asyncSequenceTime = 100;
   int asyncSequenceIndex = 0;
   int asyncSequenceCount = 0;
-  int asyncSequenceCountLimit = 2;
+  int asyncSequenceCountLimit = 5;
   int[][] asyncSequenceSet = {
-    { 0, 1, 2, 3, 3, 2, 1, 0 },     //0
-    { 4, 5, 6, 7, 7, 6, 5, 4 },
-    { 8, 9, 10, 11, 11, 10, 9, 8 },
-
-    { 3, 2, 1, 0, 0, 1, 2, 3 },
-    { 7, 6, 5, 4, 4, 5, 6, 7 },
-    { 11, 10, 9, 8, 8, 9, 10, 11 },  //5
-
-    { 0, 1, 2, 3, 7, 6, 5, 4, 8, 9, 10, 11,
-      11, 10, 9, 8, 4, 5, 6, 7, 3, 2, 1, 0 },  //6
-    { 3, 2, 1, 0, 4, 5, 6, 7, 11, 10, 9, 8,
-      8, 9, 10, 11, 7, 6, 5, 4, 0, 1, 2, 3 },  //7
+    { 0, 1, 2, 2, 1, 0 }, //0
+    { 0, 1, 2, 0, 1, 2 }, //0
+    { 2, 1, 0, 0, 1, 2 }, //0
+    { 2, 1, 0, 2, 1, 0 }, //0
   };
   boolean[] asyncRecord = {
     false, false, false, false,

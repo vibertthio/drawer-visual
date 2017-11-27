@@ -1,4 +1,4 @@
-int channel = 0;
+int chan = 0;
 
 void noteOn(int channel, int pitch, int velocity) {
   // Receive a noteOn
@@ -8,7 +8,7 @@ void noteOn(int channel, int pitch, int velocity) {
   println("Pitch:"+pitch);
   println("Velocity:"+velocity);
 
-  if (channel == 0) {
+  if (chan == 0) {
     if (pitch >= 0 && pitch < 4) {
       resetRecs_1();
     }
@@ -67,8 +67,15 @@ void noteOn(int channel, int pitch, int velocity) {
         lines.queue();
         break;
 
+      case 16:
+        movingLines.trigger(40, 5);
+        break;
+      case 17:
+        movingLines.trigger(40, -5);
+        break;
+
     }
-  } else if (channel == 1) {
+  } else if (chan == 1) {
     switch(pitch) {
       case 0:
         staticRectangles.turnOnEasingFor(800);
@@ -81,8 +88,16 @@ void noteOn(int channel, int pitch, int velocity) {
         staticRectangles.turnOneOnEasingFor(800, 2);
         break;
       case 3:
-        staticRectangles.turnOneOnEasingFor(800, 1);
-        staticRectangles.turnOneOnEasingFor(800, 2);
+        staticRectangles.triggerSequence(0);
+        break;
+      case 4:
+        staticRectangles.triggerAsyncSequence(0);
+        break;
+      case 5:
+        staticRectangles.triggerAsyncSequence(1);
+        break;
+      case 6:
+        staticRectangles.triggerAsyncSequence(2);
         break;
     }
   }
@@ -90,20 +105,23 @@ void noteOn(int channel, int pitch, int velocity) {
 
 void noteOff(int channel, int pitch, int velocity) {
   // Receive a noteOff
-  println("--------");
-  println("Note Off:");
-  println("Channel:"+channel);
-  println("Pitch:"+pitch);
-  println("Velocity:"+velocity);
+  // println("--------");
+  // println("Note Off:");
+  // println("Channel:"+channel);
+  // println("Pitch:"+pitch);
+  // println("Velocity:"+velocity);
 }
 
 void controllerChange(int channel, int number, int value) {
   // Receive a controllerChange
-  println("--------");
-  println("Controller Change:");
-  println("Channel:"+channel);
-  println("Number:"+number);
-  println("Value:"+value);
+  // println("--------");
+  // println("Controller Change:");
+  // println("Channel:"+channel);
+  // println("Number:"+number);
+  // println("Value:"+value);
+  if (number == 23) {
+    chan = channel;
+  }
 }
 
 void keyPressed() {
