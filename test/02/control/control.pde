@@ -126,76 +126,73 @@ void rectanglesInit() {
   recs_3 = new Rectangle[1];
   recs_3[0] = new Rectangle(pg, w * 0.5, h * 0.5, w, h);
   recs_3[0].centered = true;
+  recs_3[0].hdes = 0;
 }
 void rectanglesUpdate() {
   float w = pg.width;
   float h = pg.height;
-  if (state == 0) {
-    if (recs_1_state[0]) {
-      if (recs_1[0].arrived) {
-        recs_1[0].reset();
-        recs_1[0].start();
-      }
-    }
-    if (recs_1_state[1]) {
-      if (recs_1[1].arrived) {
-        recs_1[1].reset();
-        recs_1[1].start();
-      }
-    }
-  } else if (state == 1) {
-    for (int i = 0; i < 4; i++) {
-      if (recs_2[i].arrived) {
-        recs_2[i].arrived = false;
-        if (recs_2_state[0]) {
-          recs_2[i + 1].setNewDes(new PVector(w, 0));
-        }
-        recs_2[i + 1].reset();
-        recs_2[i + 1].start();
-      }
 
-      if (recs_2[i + 5].arrived) {
-        recs_2[i + 5].arrived = false;
-        if (recs_2_state[1]) {
-          recs_2[i + 6].setNewDes(new PVector(0, h));
-        }
-        recs_2[i + 6].reset();
-        recs_2[i + 6].start();
+  if (recs_1_state[0]) {
+    if (recs_1[0].arrived) {
+      recs_1[0].reset();
+      recs_1[0].start();
+    }
+  }
+
+  if (recs_1_state[1]) {
+    if (recs_1[1].arrived) {
+      recs_1[1].reset();
+      recs_1[1].start();
+    }
+  }
+
+  for (int i = 0; i < 4; i++) {
+    if (recs_2[i].arrived) {
+      recs_2[i].arrived = false;
+      if (recs_2_state[0]) {
+        recs_2[i + 1].setNewDes(new PVector(w, 0));
       }
+      recs_2[i + 1].reset();
+      recs_2[i + 1].start();
     }
 
-    if (!recs_2_state[0]) {
-      if (recs_2[4].arrived) {
-        recs_2[0].setNewDes(new PVector(w, 0));
-        recs_2[0].reset();
-        recs_2[0].start();
-        recs_2_state[0] = true;
+    if (recs_2[i + 5].arrived) {
+      recs_2[i + 5].arrived = false;
+      if (recs_2_state[1]) {
+        recs_2[i + 6].setNewDes(new PVector(0, h));
       }
+      recs_2[i + 6].reset();
+      recs_2[i + 6].start();
     }
+  }
 
-    if (!recs_2_state[1]) {
-      if (recs_2[9].arrived) {
-        recs_2[5].setNewDes(new PVector(0, h));
-        recs_2[5].reset();
-        recs_2[5].start();
-        recs_2_state[1] = true;
-      }
+  if (!recs_2_state[0]) {
+    if (recs_2[4].arrived) {
+      recs_2[0].setNewDes(new PVector(w, 0));
+      recs_2[0].reset();
+      recs_2[0].start();
+      recs_2_state[0] = true;
+    }
+  }
+
+  if (!recs_2_state[1]) {
+    if (recs_2[9].arrived) {
+      recs_2[5].setNewDes(new PVector(0, h));
+      recs_2[5].reset();
+      recs_2[5].start();
+      recs_2_state[1] = true;
     }
   }
 }
 void rectanglesDraw() {
-  if (state == 0) {
-    for (int i = 0; i < recs_1.length; i++) {
-      recs_1[i].draw();
-    }
-  } else if (state == 1) {
-    for (int i = 0; i < recs_2.length; i++) {
-      recs_2[i].draw();
-    }
-  } else if (state == 2) {
-    for (int i = 0; i < recs_3.length; i++) {
-      recs_3[i].draw();
-    }
+  for (int i = 0; i < recs_1.length; i++) {
+    recs_1[i].draw();
+  }
+  for (int i = 0; i < recs_2.length; i++) {
+    recs_2[i].draw();
+  }
+  for (int i = 0; i < recs_3.length; i++) {
+    recs_3[i].draw();
   }
 }
 

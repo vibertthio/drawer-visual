@@ -4,6 +4,7 @@ class Lines {
   int nOfL = 30;
 
   // state
+  boolean visible = false;
   float lineWeight = 2;
   boolean random = false;
   boolean glitch = false;
@@ -22,8 +23,10 @@ class Lines {
     }
   }
   void draw() {
-    update();
-    render();
+    if (visible) {
+      update();
+      render();
+    }
   }
   void update() {
 

@@ -1,3 +1,5 @@
+int channel = 0;
+
 void noteOn(int channel, int pitch, int velocity) {
   // Receive a noteOn
   println("--------");
@@ -6,10 +8,83 @@ void noteOn(int channel, int pitch, int velocity) {
   println("Pitch:"+pitch);
   println("Velocity:"+velocity);
 
-  if (pitch == 0) {
-    staticRectangles.turnOn();
-  } else {
-    staticRectangles.turnOff();
+  if (channel == 0) {
+    if (pitch >= 0 && pitch < 4) {
+      resetRecs_1();
+    }
+    switch(pitch) {
+      case 0:
+        recs_1[0].reset();
+        recs_1[0].start();
+        break;
+      case 1:
+        recs_1[1].reset();
+        recs_1[1].start();
+        break;
+      case 2:
+        recs_1[0].start();
+        recs_1_state[0] = true;
+        break;
+      case 3:
+        recs_1[1].start();
+        recs_1_state[1] = true;
+        break;
+
+      case 4:
+        resetRecs_2();
+        recs_2[0].start();
+        break;
+      case 5:
+        resetRecs_2();
+        recs_2[5].start();
+        break;
+
+      case 8:
+        recs_3[0].hdes = 0;
+        break;
+      case 9:
+        recs_3[0].hdes = 2;
+        break;
+      case 10:
+        recs_3[0].hdes = pg.height;
+        break;
+
+      case 11:
+        lines.visible = !lines.visible;
+        break;
+      case 12:
+        lines.heightUpdateSpd = 0.1;
+        if (!lines.random) {
+          lines.random = true;
+        } else {
+          lines.reset();
+        }
+        break;
+      case 13:
+        lines.glitch = !lines.glitch;
+        break;
+      case 14:
+        lines.queue();
+        break;
+
+    }
+  } else if (channel == 1) {
+    switch(pitch) {
+      case 0:
+        staticRectangles.turnOnEasingFor(800);
+        break;
+      case 1:
+        staticRectangles.turnOneOnEasingFor(800, 0);
+        break;
+      case 2:
+        staticRectangles.turnOneOnEasingFor(800, 1);
+        staticRectangles.turnOneOnEasingFor(800, 2);
+        break;
+      case 3:
+        staticRectangles.turnOneOnEasingFor(800, 1);
+        staticRectangles.turnOneOnEasingFor(800, 2);
+        break;
+    }
   }
 }
 
