@@ -26,18 +26,18 @@ class StaticRectangles {
         strips[i] = new StaticRectangle(pg, i, w * i, 0, w, h);
       }
     } else if (_id == 1) {
-      nOfStrips = 6;
+      nOfStrips = 10;
       strips = new StaticRectangle[nOfStrips];
-      float w = pg.width / 6.0;
+      float w = pg.width / 10.0;
       float h = pg.height;
       for (int i = 0; i < nOfStrips; i++) {
         strips[i] = new StaticRectangle(pg, i, w * i, 0, w, h);
       }
     } else if (_id == 2) {
-      nOfStrips = 6;
+      nOfStrips = 5;
       strips = new StaticRectangle[nOfStrips];
       float w = pg.width;
-      float h = pg.height / 6.0;
+      float h = pg.height / 5.0;
       for (int i = 0; i < nOfStrips; i++) {
         strips[i] = new StaticRectangle(pg, i, 0, h * i, w, h);
       }
@@ -45,17 +45,17 @@ class StaticRectangles {
       nOfStrips = 8;
       strips = new StaticRectangle[nOfStrips];
       float d = pg.height / 6.0;
-      float w = pg.width / 3.0;
+      float w = pg.width / 5.0;
       float h = pg.height;
       strips[0] = new StaticRectangle(pg, 0, 0, 0, d, h);
-      strips[1] = new StaticRectangle(pg, 1, d, 0, w - (2 * d), d);
-      strips[2] = new StaticRectangle(pg, 2, w - d, 0, d, h);
-      strips[3] = new StaticRectangle(pg, 3, d, h - d, w - (2 * d), d);
+      strips[1] = new StaticRectangle(pg, 1, d, 0, 2 * w - (2 * d), d);
+      strips[2] = new StaticRectangle(pg, 2, 2 * w - d, 0, d, h);
+      strips[3] = new StaticRectangle(pg, 3, d, h - d, 2 * w - (2 * d), d);
 
-      strips[4] = new StaticRectangle(pg, 4, w, 0, d, h);
-      strips[5] = new StaticRectangle(pg, 5, w + d, 0, (2 * w) - (2 * d), d);
-      strips[6] = new StaticRectangle(pg, 6, (w * 3) - d, 0, d, h);
-      strips[7] = new StaticRectangle(pg, 7, w + d, h - d, (2 * w) - (2 * d), d);
+      strips[4] = new StaticRectangle(pg, 4, 2 * w, 0, d, h);
+      strips[5] = new StaticRectangle(pg, 5, 2 * w + d, 0, (3 * w) - (2 * d), d);
+      strips[6] = new StaticRectangle(pg, 6, (w * 5) - d, 0, d, h);
+      strips[7] = new StaticRectangle(pg, 7, 2 * w + d, h - d, (3 * w) - (2 * d), d);
     }
   }
   public void draw() {
@@ -184,6 +184,16 @@ class StaticRectangles {
       strips[i].blink();
     }
   }
+  void setWdes(float _w) {
+    for (int i = 0; i < nOfStrips; i++) {
+      strips[i].wdes = _w;
+    }
+  }
+  void resetW() {
+    for (int i = 0; i < nOfStrips; i++) {
+      strips[i].wdes = strips[i].worg;
+    }
+  }
 
   boolean turnSequenceActivate = false;
   int sequenceTriggerIndex = 0;
@@ -195,8 +205,8 @@ class StaticRectangles {
   int[][] sequenceSet = {
     { 0, 1, 2, 3, 4}, // 0
     { 4, 3, 2, 1, 0 },
-    { 0, 3, 4, 7, 8, 11 },
-    { 0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11 },
+    { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 },
+    { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 },
     { 0, 11, 4, 8 },
     { 9, 2, 1, 10 }, // 5
     { 0, 4, 8, 1, 5, 9 },
@@ -586,6 +596,10 @@ class StaticRectangle {
   float ypos;
   float w;
   float h;
+  float worg;
+  float horg;
+  float wdes;
+  float hdes;
 
   TimeLine dimTimer;
 
@@ -623,9 +637,11 @@ class StaticRectangle {
     xpos = _x;
     ypos = _y;
     w = _w;
+    wdes = _w;
+    worg = _w;
     h = _h;
-    // xpos = width / 2 - length / 2;
-    // ypos = height / 2;
+    hdes = _h;
+    horg = _h;
 
     // Timers
     dimTimer = new TimeLine(300);
@@ -637,6 +653,8 @@ class StaticRectangle {
     render();
   }
   void update() {
+    updateW();
+    updateH();
     if (dimming) {
       float ratio = 0;
       if (repeatBreathing) {
@@ -789,5 +807,20 @@ class StaticRectangle {
     dimTimer.repeatTime = time;
     dimTimer.breathState = false;
     dimTimer.startTimer();
+  }
+
+  void updateH() {
+    if (abs(hdes - h) < 0.1) {
+      h = hdes;
+    } else {
+      h += (hdes - h) * 0.1;
+    }
+  }
+  void updateW() {
+    if (abs(wdes - w) < 0.1) {
+      w = wdes;
+    } else {
+      w += (wdes - w) * 0.1;
+    }
   }
 }

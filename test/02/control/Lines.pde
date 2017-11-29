@@ -117,7 +117,7 @@ class StraightLine {
     } else {
       lines = _l;
       pg = _p;
-      float w = pg.width * 0.5;
+      float w = pg.width * 0.4;
       left = new PVector(w, 0);
       right = new PVector(w, pg.height);
       leftWidthDes = w;
@@ -146,10 +146,17 @@ class StraightLine {
     pg.strokeWeight(lines.lineWeight);
     if (lines.glitch) {
       int a = lines.glitchAmt;
-      pg.line(
+      if (hr) {
+        pg.line(
         left.x, left.y + random(-a, a),
-        right.x, right.y+ random(-a, a)
-      );
+        right.x, right.y + random(-a, a)
+        );
+      } else {
+        pg.line(
+        left.x + random(-a, a), left.y,
+        right.x + random(-a, a), right.y
+        );
+      }
     } else {
       pg.line(left.x, left.y, right.x, right.y);
     }
@@ -160,8 +167,8 @@ class StraightLine {
       rightHeightDes = pg.height * 0.5;
       leftHeightDes = pg.height * 0.5;
     } else {
-      leftWidthDes = pg.width * 0.5;
-      rightWidthDes = pg.width * 0.5;
+      leftWidthDes = pg.width * 0.4;
+      rightWidthDes = pg.width * 0.4;
     }
   }
   void reset(float h) {

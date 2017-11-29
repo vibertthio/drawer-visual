@@ -8,6 +8,7 @@ SyphonServer server;
 MidiBus midi;
 int state = 4;
 int stateLimit = 4;
+boolean on = true;
 boolean usingShader = true;
 
 // universal
@@ -44,28 +45,30 @@ void setup() {
   linesInit();
 }
 void draw() {
-  pg.beginDraw();
-  pg.background(0);
-  // testDraw();
-  generalDraw();
-  rectanglesUpdate();
-  rectanglesDraw();
-  wavesDraw();
-  linesDraw();
-  pg.endDraw();
+  if (on) {    
+    pg.beginDraw();
+    pg.background(0);
+    // testDraw();
+    generalDraw();
+    rectanglesUpdate();
+    rectanglesDraw();
+    wavesDraw();
+    linesDraw();
+    pg.endDraw();
 
-  pgout.beginDraw();
-  if (usingShader) {
-    shaderUpdate();
-    pgout.shader(shade);
+    pgout.beginDraw();
+    if (usingShader) {
+      shaderUpdate();
+      pgout.shader(shade);
+    }
+    tintUpdate();
+    pgout.image(pg, 0, 0);
+    pgout.resetShader();
+    pgout.endDraw();
+
+    image(pgout, 0, 0);
+    server.sendImage(pgout);
   }
-  tintUpdate();
-  pgout.image(pg, 0, 0);
-  pgout.resetShader();
-  pgout.endDraw();
-
-  image(pgout, 0, 0);
-  server.sendImage(pgout);
 }
 
 // utils

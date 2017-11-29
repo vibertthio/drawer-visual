@@ -49,10 +49,39 @@ void noteOn(int channel, int pitch, int velocity) {
         recs_3[0].hdes = pg.height;
         break;
 
-      case 11:
+
+      case 16:
+        waves.visible = !waves.visible;
+        break;
+      case 17:
+        movingLines.trigger(40, 5);
+        break;
+      case 18:
+        movingLines.trigger(40, -5);
+        break;
+
+
+
+      case 24:
+        verticalLines.visible = !verticalLines.visible;
+        break;
+      case 25:
+        if (!verticalLines.random) {
+          verticalLines.random = true;
+        } else {
+          verticalLines.reset();
+        }
+        break;
+      case 26:
+        verticalLines.glitch = !verticalLines.glitch;
+        break;
+      case 27:
+        verticalLines.queue();
+        break;
+      case 28:
         lines.visible = !lines.visible;
         break;
-      case 12:
+      case 29:
         lines.yUpdateSpd = 0.1;
         if (!lines.random) {
           lines.random = true;
@@ -60,38 +89,16 @@ void noteOn(int channel, int pitch, int velocity) {
           lines.reset();
         }
         break;
-      case 13:
+      case 30:
         lines.glitch = !lines.glitch;
         break;
-      case 14:
+      case 31:
         lines.queue();
         break;
 
-      case 16:
-        movingLines.trigger(40, 5);
-        break;
-      case 17:
-        movingLines.trigger(40, -5);
-        break;
 
-      case 24:
-        waves.visible = !waves.visible;
-        break;
-
-      case 32:
-        verticalLines.visible = !verticalLines.visible;
-        break;
-      case 33:
-        if (!verticalLines.random) {
-          verticalLines.random = true;
-        } else {
-          verticalLines.reset();
-        }
-        break;
-      case 34:
-        verticalLines.queue();
-        break;
-
+      case 81:
+        on = !on;
     }
   } else if (chan == 1) {
     switch(pitch) {
@@ -100,6 +107,7 @@ void noteOn(int channel, int pitch, int velocity) {
         break;
       case 1:
         srec[0].turnOneOnEasingFor(800, 0);
+        srec[0].turnOneOnEasingFor(800, 1);
         break;
       case 2:
         srec[0].turnOneOnEasingFor(800, 2);
@@ -110,38 +118,45 @@ void noteOn(int channel, int pitch, int velocity) {
         srec[0].triggerSequence(0);
         break;
       case 4:
-        srec[0].triggerAsyncSequence(0);
+        srec[0].triggerSequence(1);
         break;
       case 5:
-        srec[0].triggerAsyncSequence(1);
+        srec[0].triggerRandBlink();
         break;
       case 6:
-        srec[0].triggerAsyncSequence(2);
+        srec[0].bangFourRandSequence(5);
         break;
 
+
       case 8:
-        srec[1].turnOneOnEasingFor(800, 0);
+        srec[1].turnOn(800);
         break;
       case 9:
-        srec[1].turnOneOnEasingFor(800, 1);
+        srec[1].turnOffEasing(200);
         break;
       case 10:
-        srec[1].turnOneOnEasingFor(800, 2);
+        srec[1].setWdes(0);
+        break;
+      case 11:
+        srec[1].resetW();
+        break;
+      case 12:
+        srec[1].triggerSequence(2);
+        break;
+      case 13:
+        srec[1].triggerSequence(3);
         break;
 
       case 16:
-        srec[2].turnOneOnEasingFor(800, 0);
+        srec[2].turnOnEasingFor(800);
         break;
       case 17:
-        srec[2].turnOneOnEasingFor(800, 1);
+        srec[2].triggerSequence(0);
         break;
       case 18:
-        srec[2].turnOneOnEasingFor(800, 2);
+        srec[2].triggerSequence(1);
         break;
       case 19:
-        srec[2].turnFourRandSequence(20);
-        break;
-      case 20:
         srec[2].triggerRandBlink();
         break;
 
