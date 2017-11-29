@@ -53,7 +53,7 @@ void noteOn(int channel, int pitch, int velocity) {
         lines.visible = !lines.visible;
         break;
       case 12:
-        lines.heightUpdateSpd = 0.1;
+        lines.yUpdateSpd = 0.1;
         if (!lines.random) {
           lines.random = true;
         } else {
@@ -74,31 +74,90 @@ void noteOn(int channel, int pitch, int velocity) {
         movingLines.trigger(40, -5);
         break;
 
+      case 24:
+        waves.visible = !waves.visible;
+        break;
+
+      case 32:
+        verticalLines.visible = !verticalLines.visible;
+        break;
+      case 33:
+        if (!verticalLines.random) {
+          verticalLines.random = true;
+        } else {
+          verticalLines.reset();
+        }
+        break;
+      case 34:
+        verticalLines.queue();
+        break;
+
     }
   } else if (chan == 1) {
     switch(pitch) {
       case 0:
-        staticRectangles.turnOnEasingFor(800);
+        srec[0].turnOnEasingFor(800);
         break;
       case 1:
-        staticRectangles.turnOneOnEasingFor(800, 0);
+        srec[0].turnOneOnEasingFor(800, 0);
         break;
       case 2:
-        staticRectangles.turnOneOnEasingFor(800, 1);
-        staticRectangles.turnOneOnEasingFor(800, 2);
+        srec[0].turnOneOnEasingFor(800, 2);
+        srec[0].turnOneOnEasingFor(800, 3);
+        srec[0].turnOneOnEasingFor(800, 4);
         break;
       case 3:
-        staticRectangles.triggerSequence(0);
+        srec[0].triggerSequence(0);
         break;
       case 4:
-        staticRectangles.triggerAsyncSequence(0);
+        srec[0].triggerAsyncSequence(0);
         break;
       case 5:
-        staticRectangles.triggerAsyncSequence(1);
+        srec[0].triggerAsyncSequence(1);
         break;
       case 6:
-        staticRectangles.triggerAsyncSequence(2);
+        srec[0].triggerAsyncSequence(2);
         break;
+
+      case 8:
+        srec[1].turnOneOnEasingFor(800, 0);
+        break;
+      case 9:
+        srec[1].turnOneOnEasingFor(800, 1);
+        break;
+      case 10:
+        srec[1].turnOneOnEasingFor(800, 2);
+        break;
+
+      case 16:
+        srec[2].turnOneOnEasingFor(800, 0);
+        break;
+      case 17:
+        srec[2].turnOneOnEasingFor(800, 1);
+        break;
+      case 18:
+        srec[2].turnOneOnEasingFor(800, 2);
+        break;
+      case 19:
+        srec[2].turnFourRandSequence(20);
+        break;
+      case 20:
+        srec[2].triggerRandBlink();
+        break;
+
+      case 24:
+        srec[3].turnOneOnEasingFor(800, 0);
+        srec[3].turnOneOnEasingFor(800, 1);
+        srec[3].turnOneOnEasingFor(800, 2);
+        srec[3].turnOneOnEasingFor(800, 3);
+        break;
+      case 25:
+        srec[3].turnOneOnEasingFor(800, 4);
+        srec[3].turnOneOnEasingFor(800, 5);
+        srec[3].turnOneOnEasingFor(800, 6);
+        srec[3].turnOneOnEasingFor(800, 7);
+        break;
+
     }
   }
 }
@@ -114,11 +173,22 @@ void noteOff(int channel, int pitch, int velocity) {
 
 void controllerChange(int channel, int number, int value) {
   // Receive a controllerChange
-  // println("--------");
-  // println("Controller Change:");
-  // println("Channel:"+channel);
-  // println("Number:"+number);
-  // println("Value:"+value);
+  println("--------");
+  println("Controller Change:");
+  println("Channel:"+channel);
+  println("Number:"+number);
+  println("Value:"+value);
+  if (channel == 0) {
+    switch(number) {
+      case 16:
+        waves.setBand(map(value, 0, 127, 0, pg.height - 900));
+        break;
+      case 17:
+        waves.setAmp(map(value, 0, 127, 0, 250));
+        break;
+    }
+  }
+
   if (number == 23) {
     chan = channel;
   }
@@ -172,7 +242,7 @@ void keyPressed() {
     }
   } else if (state == 4) {
     if (key == '1') {
-      lines.heightUpdateSpd = 0.1;
+      lines.yUpdateSpd = 0.1;
       if (!lines.random) {
         lines.random = true;
       } else {

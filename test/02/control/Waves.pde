@@ -3,6 +3,7 @@ class Waves {
   int nOfW = 20;
   ArrayList<Wave> waves;
   PGraphics pg;
+  boolean visible = false;
 
   Waves(PGraphics _p) {
     pg = _p;
@@ -15,8 +16,10 @@ class Waves {
     }
   }
   void draw() {
-    update();
-    render();
+    if (visible) {
+      update();
+      render();
+    }
   }
   void update() {
     mouseControl = map(mouseY, 0, pg.height, 0, 0.01);
@@ -41,7 +44,7 @@ class Waves {
   void setBand(float band) {
     float h = (pg.height - band);
     for (int i = 0; i < nOfW; i++) {
-      float y = (h * (i + 0.5)) / nOfW + band * 0.5;
+      float y = (band * (i + 0.5)) / nOfW + h * 0.5;
       waves.get(i).ypos = y;
     }
   }

@@ -12,7 +12,7 @@ boolean usingShader = true;
 
 // universal
 MovingLines movingLines;
-StaticRectangles staticRectangles;
+StaticRectangles[] srec;
 
 // state: 0
 Rectangle[] recs_1;
@@ -30,10 +30,11 @@ Waves waves;
 
 // state : 4
 Lines lines;
+Lines verticalLines;
 
 // basic
 void settings() {
-  size(1920, 380, P2D);
+  size(1280, 380, P2D);
   PJOGL.profile=1;
 }
 void setup() {
@@ -76,14 +77,20 @@ void tintUpdate() {
   }
 }
 void generalInit() {
-  pg = createGraphics(1920, 380);
-  pgout = createGraphics(1920, 380, P2D);
+  // pg = createGraphics(1920, 380);
+  // pgout = createGraphics(1920, 380, P2D);
+  pg = createGraphics(1280, 380);
+  pgout = createGraphics(1280, 380, P2D);
   server = new SyphonServer(this, "Processing Syphon");
   midi = new MidiBus(this, "APC40 mkII", -1);
   shaderSetup();
 
   movingLines = new MovingLines(pg);
-  staticRectangles = new StaticRectangles(pg);
+  srec = new StaticRectangles[4];
+  srec[0] = new StaticRectangles(pg, 0);
+  srec[1] = new StaticRectangles(pg, 1);
+  srec[2] = new StaticRectangles(pg, 2);
+  srec[3] = new StaticRectangles(pg, 3);
 }
 void shaderSetup() {
   // shade = loadShader("blur.glsl");
@@ -108,7 +115,9 @@ void testDraw() {
 }
 void generalDraw() {
   movingLines.draw();
-  staticRectangles.draw();
+  for (int i = 0; i < srec.length; i++) {
+    srec[i].draw();
+  }
 }
 
 // recs
@@ -199,30 +208,30 @@ void rectanglesDraw() {
 // waves
 void wavesInit() {
   waves = new Waves(pg);
+  waves.setAmp(0);
 }
 void wavesDraw() {
-  if (state == 3) {
-    waves.draw();
-    if (frameCount % 5 == 0) {
-      wavesInteract();
-    }
-  }
+  waves.draw();
+  // if (frameCount % 5 == 0) {
+  //   wavesInteract();
+  // }
 }
 void wavesInteract() {
   float band = 600;
   waves.setAmp(map(mouseY, 0, height, 0, 250));
-  waves.setBand(map(mouseX, 0, width, pg.height, 600));
+  waves.setBand(map(mouseX, 0, width, 0, pg.height - 900));
 }
 
 // lines
 void linesInit() {
-  lines = new Lines(pg);
+  lines = new Lines(pg, true, 10);
+  verticalLines = new Lines(pg, false);
   lines.reset();
+  verticalLines.reset();
 }
 void linesDraw() {
-  if (state == 4) {
-    lines.draw();
-  }
+  lines.draw();
+  verticalLines.draw();
 }
 
 // reset

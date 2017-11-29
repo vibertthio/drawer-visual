@@ -5,21 +5,33 @@ class Lines {
 
   // state
   boolean visible = false;
+  boolean hr = true;
   float lineWeight = 2;
   boolean random = false;
   boolean glitch = false;
   int glitchAmt = 40;
-  float heightUpdateSpd = 0.1;
+  float yUpdateSpd = 0.1;
 
 
   Lines(PGraphics _p) {
     pg = _p;
     initLines();
   }
+  Lines(PGraphics _p, boolean _hr) {
+    pg = _p;
+    hr = _hr;
+    initLines();
+  }
+  Lines(PGraphics _p, boolean _hr, int _n) {
+    pg = _p;
+    hr = _hr;
+    nOfL = _n;
+    initLines();
+  }
   void initLines() {
     lines = new StraightLine[nOfL];
     for (int i = 0; i < nOfL; i++) {
-      lines[i] = new StraightLine(this, pg);
+      lines[i] = new StraightLine(this, pg, hr);
     }
   }
   void draw() {
@@ -43,7 +55,21 @@ class Lines {
     }
   }
   void queue() {
-    heightUpdateSpd = 0.005;
+    for (int i = 0; i < nOfL; i++) {
+      // float h = (float)(pg.height * i) / nOfL;
+      if (hr) {
+        float h = map(i, 0, nOfL, 0, pg.height);
+        lines[i].leftHeightDes = h;
+        lines[i].rightHeightDes = h;
+      } else {
+        float w = map(i, 0, nOfL, 0, pg.width);
+        lines[i].leftWidthDes = w;
+        lines[i].rightWidthDes = w;
+      }
+    }
+  }
+  void expand() {
+    yUpdateSpd = 0.005;
     for (int i = 0; i < nOfL; i++) {
       // float h = (float)(pg.height * i) / nOfL;
       float h = map(i, 0, nOfL, 0, pg.height);
@@ -58,11 +84,14 @@ class Lines {
 
 class StraightLine {
   PGraphics pg;
+  boolean hr = true;
   Lines lines;
   PVector left;
   PVector right;
   float leftHeightDes;
   float rightHeightDes;
+  float leftWidthDes;
+  float rightWidthDes;
   float alpha = 255;
   float alphaTarget = 255;
 
@@ -75,14 +104,41 @@ class StraightLine {
     leftHeightDes = h;
     rightHeightDes = h;
   }
+  StraightLine(Lines _l, PGraphics _p, boolean _h) {
+    hr = _h;
+    if (hr) {
+      lines = _l;
+      pg = _p;
+      float h = pg.height * 0.5;
+      left = new PVector(0, h);
+      right = new PVector(pg.width, h);
+      leftHeightDes = h;
+      rightHeightDes = h;
+    } else {
+      lines = _l;
+      pg = _p;
+      float w = pg.width * 0.5;
+      left = new PVector(w, 0);
+      right = new PVector(w, pg.height);
+      leftWidthDes = w;
+      rightWidthDes = w;
+    }
+  }
   void draw() {
     update();
     render();
   }
   void update() {
-    updateHeight();
-    if (lines.random) {
-      randomShiftY();
+    if (hr) {
+      updateY();
+      if (lines.random) {
+        randomShiftY();
+      }
+    } else {
+      updateX();
+      if (lines.random) {
+        randomShiftX();
+      }
     }
   }
   void render() {
@@ -100,8 +156,13 @@ class StraightLine {
   }
 
   void reset() {
-    rightHeightDes = pg.height * 0.5;
-    leftHeightDes = pg.height * 0.5;
+    if (hr) {
+      rightHeightDes = pg.height * 0.5;
+      leftHeightDes = pg.height * 0.5;
+    } else {
+      leftWidthDes = pg.width * 0.5;
+      rightWidthDes = pg.width * 0.5;
+    }
   }
   void reset(float h) {
     rightHeightDes = h;
@@ -116,19 +177,43 @@ class StraightLine {
       rightHeightDes = random(-0.5 * h, 1.5 * h);
     }
   }
-  void updateHeight() {
+  void randomShiftX() {
+    float w = pg.width;
+    if (random(1) < 0.01) {
+      leftWidthDes = random(0, w);
+    }
+    if (random(1) < 0.01) {
+      rightWidthDes = random(0, w);
+    }
+  }
+  void updateY() {
     float ld = leftHeightDes - left.y;
     if (abs(ld) > 0.1) {
-      left.y += ld * lines.heightUpdateSpd;
+      left.y += ld * lines.yUpdateSpd;
     } else {
       left.y = leftHeightDes;
     }
 
     float rd = rightHeightDes - right.y;
     if (abs(rd) > 0.1) {
-      right.y += rd * lines.heightUpdateSpd;
+      right.y += rd * lines.yUpdateSpd;
     } else {
       right.y = rightHeightDes;
+    }
+  }
+  void updateX() {
+    float ld = leftWidthDes - left.x;
+    if (abs(ld) > 0.1) {
+      left.x += ld * lines.yUpdateSpd;
+    } else {
+      left.x = leftWidthDes;
+    }
+
+    float rd = rightWidthDes - right.x;
+    if (abs(rd) > 0.1) {
+      right.x += rd * lines.yUpdateSpd;
+    } else {
+      right.x = rightWidthDes;
     }
   }
 }
@@ -166,9 +251,12 @@ class MovingLines {
     for (int i = 0; i < nOfL; i++) {
       heightOfLines[i] += spd;
       if (heightOfLines[i] > pg.height) {
-        heightOfLines[i] = 0;
+        int index = (i + 1) % heightOfLines.length;
+        heightOfLines[i] = heightOfLines[index] - gap;
       } else if (heightOfLines[i] < 0) {
-        heightOfLines[i] = pg.height;
+        int index = (i - 1);
+        if (index < 0) { index = heightOfLines.length - 1; }
+        heightOfLines[i] = heightOfLines[index] + gap;
       }
       pg.stroke(255);
       pg.strokeWeight(1);

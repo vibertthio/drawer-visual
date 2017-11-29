@@ -4,17 +4,61 @@ class StaticRectangles {
   int nOfStrips = 3;
   int nOfCol = 1;
 
+
   StaticRectangles(PGraphics _p) {
     pg = _p;
     strips = new StaticRectangle[nOfStrips];
     float w = pg.width / 3.0;
     float h = pg.height;
-    strips[0] = new StaticRectangle(pg, 0, 0, 0, w, h);
-    strips[1] = new StaticRectangle(pg, 1, w, 0, w, h);
-    strips[2] = new StaticRectangle(pg, 2, w * 2, 0, w, h);
+    for (int i = 0; i < nOfStrips; i++) {
+      strips[i] = new StaticRectangle(pg, i, w * i, 0, w, h);
+    }
+  }
+  StaticRectangles(PGraphics _p, int _id) {
+    pg = _p;
+
+    if (_id == 0) {
+      nOfStrips = 5;
+      strips = new StaticRectangle[nOfStrips];
+      float w = pg.width / 5.0;
+      float h = pg.height;
+      for (int i = 0; i < nOfStrips; i++) {
+        strips[i] = new StaticRectangle(pg, i, w * i, 0, w, h);
+      }
+    } else if (_id == 1) {
+      nOfStrips = 6;
+      strips = new StaticRectangle[nOfStrips];
+      float w = pg.width / 6.0;
+      float h = pg.height;
+      for (int i = 0; i < nOfStrips; i++) {
+        strips[i] = new StaticRectangle(pg, i, w * i, 0, w, h);
+      }
+    } else if (_id == 2) {
+      nOfStrips = 6;
+      strips = new StaticRectangle[nOfStrips];
+      float w = pg.width;
+      float h = pg.height / 6.0;
+      for (int i = 0; i < nOfStrips; i++) {
+        strips[i] = new StaticRectangle(pg, i, 0, h * i, w, h);
+      }
+    } else if (_id == 3) {
+      nOfStrips = 8;
+      strips = new StaticRectangle[nOfStrips];
+      float d = pg.height / 6.0;
+      float w = pg.width / 3.0;
+      float h = pg.height;
+      strips[0] = new StaticRectangle(pg, 0, 0, 0, d, h);
+      strips[1] = new StaticRectangle(pg, 1, d, 0, w - (2 * d), d);
+      strips[2] = new StaticRectangle(pg, 2, w - d, 0, d, h);
+      strips[3] = new StaticRectangle(pg, 3, d, h - d, w - (2 * d), d);
+
+      strips[4] = new StaticRectangle(pg, 4, w, 0, d, h);
+      strips[5] = new StaticRectangle(pg, 5, w + d, 0, (2 * w) - (2 * d), d);
+      strips[6] = new StaticRectangle(pg, 6, (w * 3) - d, 0, d, h);
+      strips[7] = new StaticRectangle(pg, 7, w + d, h - d, (2 * w) - (2 * d), d);
+    }
   }
   public void draw() {
-    // println("draw");
     update();
     render();
   }
@@ -23,6 +67,7 @@ class StaticRectangles {
     updateComplexSequence();
     updateAsyncSequence();
     updateComplexAsyncSequence();
+    updateRandBlink();
   }
   void render() {
     for (int i = 0; i < nOfStrips; i++) {
@@ -143,13 +188,13 @@ class StaticRectangles {
   boolean turnSequenceActivate = false;
   int sequenceTriggerIndex = 0;
   boolean bangSequence = false;
-  int turnSequenceTime = 100;
+  int turnSequenceTime = 10;
   int turnSequenceIndex = 0;
   int turnSequenceCount = 0;
   int turnSequenceCountLimit = 5;
   int[][] sequenceSet = {
-    { 0, 1, 2}, // 0
-    { 2, 1, 0 },
+    { 0, 1, 2, 3, 4}, // 0
+    { 4, 3, 2, 1, 0 },
     { 0, 3, 4, 7, 8, 11 },
     { 0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11 },
     { 0, 11, 4, 8 },
@@ -465,11 +510,14 @@ class StaticRectangles {
   void turnFourRandSequence(int time) {
     final int NUM = 4;
     final IntList nums = new IntList(NUM);
+    int rnd;
 
-    for (int rnd, i = 0; i <= NUM; nums.append(rnd), ++i)
-    do {
-      rnd = (int) random(nOfStrips);
-    } while (nums.hasValue(rnd));
+    for (int i = 0; i < NUM; ++i) {
+      do {
+        rnd = (int) random(nOfStrips);
+      } while (nums.hasValue(rnd));
+      nums.append(rnd);
+    }
 
     for (int i = 0; i < NUM; i++) {
       sequenceSet[RANDSEQUENCE][i] = nums.get(i);
@@ -489,6 +537,27 @@ class StaticRectangles {
       sequenceSet[RANDSEQUENCE][i] = nums.get(i);
     }
     bangSequence(RANDSEQUENCE, time);
+  }
+
+  boolean randBlink = false;
+  int randBlinkCount = 0;
+  int randBlinkCountLimit = 7;
+  void triggerRandBlink() {
+    if (!randBlink) {
+      randBlink = true;
+    } else {
+      turnOff();
+      randBlink = false;
+    }
+  }
+  void updateRandBlink() {
+    if (randBlink) {
+      randBlinkCount++;
+      if (randBlinkCount > randBlinkCountLimit) {
+        turnRandOneOnFor(50, 10);
+        randBlinkCount = 0;
+      }
+    }
   }
 
   // rand on off
@@ -521,7 +590,7 @@ class StaticRectangle {
   TimeLine dimTimer;
 
   // state
-  boolean independentControl = false;
+  boolean center = false;
   boolean repeatBreathing = false;
 
   // temperary
@@ -530,6 +599,11 @@ class StaticRectangle {
   float targetAlpha;
   float initialAlpha;
   int dimTime = 0;
+
+  // expand function
+  boolean expanding = false;
+  TimeLine hTimer;
+
 
   // blink function
   boolean blink = false;
@@ -556,6 +630,7 @@ class StaticRectangle {
     // Timers
     dimTimer = new TimeLine(300);
     turnOnTimer = new TimeLine(50);
+    hTimer = new TimeLine(200);
   }
   void draw() {
     update();
@@ -581,7 +656,6 @@ class StaticRectangle {
         dimming = false;
         repeatBreathing = false;
       }
-    // } else if (blink) {
     }
     if (blink) {
       // println("blink check!!");
@@ -599,8 +673,11 @@ class StaticRectangle {
   void render() {
     pg.pushMatrix();
     pg.translate(xpos, ypos);
-    pg.rectMode(CORNER);
-    // pg.rectMode(CENTER);
+    if (center) {
+      pg.rectMode(CENTER);
+    } else {
+      pg.rectMode(CORNER);
+    }
     pg.noStroke();
     pg.fill(255, alpha);
     pg.rect(0, 0, w, h);
@@ -608,7 +685,6 @@ class StaticRectangle {
   }
   void turnOn() {
     repeatBreathing = false;
-    independentControl = false;
     dimming = false;
     alpha = 255;
     initialAlpha = 255;
@@ -616,7 +692,6 @@ class StaticRectangle {
   }
   void turnOn(int time) {
     repeatBreathing = false;
-    independentControl = false;
     dimming = true;
     dimTimer.limit = time;
     dimTimer.startTimer();
@@ -634,7 +709,6 @@ class StaticRectangle {
   }
   void turnOff() {
     repeatBreathing = false;
-    independentControl = false;
     dimming = false;
     alpha = 0;
     initialAlpha = 0;
@@ -642,7 +716,6 @@ class StaticRectangle {
   }
   void turnOff(int time) {
     repeatBreathing = false;
-    independentControl = false;
     dimming = true;
     dimTimer.limit = time;
     dimTimer.startTimer();
