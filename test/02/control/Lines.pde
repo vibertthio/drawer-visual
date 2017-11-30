@@ -80,6 +80,16 @@ class Lines {
       lines[i].rightHeightDes = hdes;
     }
   }
+  void uniAlpha() {
+    for (int i = 0; i < nOfL; i++) {
+      lines[i].alpha = map(shaderBlinkAmount, 0, 1, 0, 200);
+    }
+  }
+  void randAlpha() {
+    for (int i = 0; i < nOfL; i++) {
+      lines[i].alpha = random(5, 90);
+    }
+  }
 }
 
 class StraightLine {
@@ -96,6 +106,7 @@ class StraightLine {
   float alphaTarget = 255;
 
   StraightLine(Lines _l, PGraphics _p) {
+    alpha = random(5, 90);
     lines = _l;
     pg = _p;
     float h = pg.height * 0.5;
@@ -105,8 +116,10 @@ class StraightLine {
     rightHeightDes = h;
   }
   StraightLine(Lines _l, PGraphics _p, boolean _h) {
+    alpha = 40;
     hr = _h;
     if (hr) {
+      // alpha = 40;
       lines = _l;
       pg = _p;
       float h = pg.height * 0.5;
@@ -142,7 +155,7 @@ class StraightLine {
     }
   }
   void render() {
-    pg.stroke(255);
+    pg.stroke(alpha);
     pg.strokeWeight(lines.lineWeight);
     if (lines.glitch) {
       int a = lines.glitchAmt;
@@ -187,10 +200,18 @@ class StraightLine {
   void randomShiftX() {
     float w = pg.width;
     if (random(1) < 0.01) {
-      leftWidthDes = random(0, w);
-    }
-    if (random(1) < 0.01) {
-      rightWidthDes = random(0, w);
+      if (random(1) < 0.5) {
+        if (leftWidthDes <= 0.4 * w) {
+          leftWidthDes = random(0, 0.3 * w);
+          rightWidthDes = random(0, 0.3 * w);
+        }
+      } else {
+        if (leftWidthDes >= 0.4 * w) {
+          leftWidthDes = random(0.5 * w, w);
+          rightWidthDes = random(0.5 * w, w);
+        }
+
+      }
     }
   }
   void updateY() {

@@ -9,6 +9,7 @@ varying vec4 vertTexCoord;
 uniform sampler2D texture;
 uniform vec2 texOffset;
 uniform float brt;
+uniform float amt;
 uniform int time;
 uniform int rad;
 
@@ -17,7 +18,7 @@ void main(void) {
   int j = 0;
   vec4 sum = vec4(0.0);
 
-  float br = 0.1 + 0.1 * sin(float(time) / 300.0);
+  float br = amt * 0.2 * sin(float(time) / 300.0) * sin(float(time) / 300.0);
 
   for( i=-rad;i<rad;i++) {
     for( j=-rad;j<rad;j++) {

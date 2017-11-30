@@ -13,6 +13,7 @@ int stateLimit = 4;
 boolean on = true;
 boolean three = true;
 boolean usingShader = true;
+float shaderBlinkAmount = 1;
 
 // universal
 MovingLines movingLines;
@@ -32,6 +33,7 @@ Rectangle[] recs_3;
 // state : 3
 Waves waves;
 Water water;
+Particles p;
 
 // state : 4
 Lines lines;
@@ -92,6 +94,7 @@ void generalInit() {
 void shaderSetup() {
   shade = loadShader("neon.glsl");
   shade.set("rad", 2);
+  shade.set("amt", 1);
 
   shade3d = loadShader("channels.glsl");
   shade3d.set("rbias", 0.005, 0.0);
@@ -103,6 +106,7 @@ void shaderSetup() {
 }
 void shaderUpdate() {
   shade.set("time", millis());
+  shade.set("amt", shaderBlinkAmount);
 }
 void testDraw() {
   pg.rectMode(CENTER);
@@ -159,7 +163,7 @@ void rectanglesInit() {
   float w = pg.width;
   float h = pg.height;
   recs_1 = new Rectangle[2];
-  recs_1[0] = new Rectangle(pg, w * -0.1, 0, w * 0.1, h);
+  recs_1[0] = new Rectangle(pg, w * -0.4, 0, w * 0.4, h);
   recs_1[1] = new Rectangle(pg, 0, h * -0.4, w, h * 0.4);
   recs_1[1].setDes(new PVector(0, h));
   recs_1[1].timer.limit = 300;

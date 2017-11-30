@@ -9,7 +9,7 @@ class Waves {
   Waves(PGraphics _p) {
     pg = _p;
     waves = new  ArrayList<Wave>();
-    float h = (pg.height - band);
+    float h = (pg.height - band) + ypos;
     for (int i = 0; i < nOfW; i++) {
       float y = (band * (i + 0.5)) / nOfW + h * 0.5;
       waves.add(new Wave(i, pg, y * 0.01, y));
@@ -40,14 +40,18 @@ class Waves {
   }
   void setBand(float _b) {
     band = _b;
-    float h = (pg.height - band);
+    updatePos();
+  }
+  void setYPos(float _ypos) {
+    ypos = _ypos;
+    updatePos();
+  }
+  void updatePos() {
+    float h = (pg.height - band) + ypos;
     for (int i = 0; i < nOfW; i++) {
       float y = (band * (i + 0.5)) / nOfW + h * 0.5;
       waves.get(i).ypos = y;
     }
-  }
-  void setYPos(float _ypos) {
-    ypos = _ypos;
   }
 }
 
@@ -58,6 +62,7 @@ class Water {
   PGraphics pg;
   float band = 0;
   float ypos = 300;
+  float gap = -50;
 
   Water(PGraphics _p) {
     pg = _p;
@@ -65,7 +70,10 @@ class Water {
     float h = (pg.height - band);
     for (int i = 0; i < nOfW; i++) {
       float y = (h * (i + 0.5)) / nOfW + band * 0.5;
-      waves.add(new WaterWave(i, pg, y * 0.01, ypos));
+      WaterWave ww = new WaterWave(i, pg, y * 0.01, ypos);
+      ww.start -= i * 150;
+      ww.end += i * 150;
+      waves.add(ww);
     }
   }
   void draw() {
@@ -78,7 +86,7 @@ class Water {
 
     for (int i = 0; i < nOfW; i++) {
       waves.get(i).draw();
-      pg.translate(0, 0, -50);
+      pg.translate(0, 0, gap);
     }
     // pg.endDraw();
   }
@@ -106,5 +114,9 @@ class Water {
       float y = (h * (i + 0.5)) / nOfW + band * 0.5;
       waves.get(i).ypos = ypos;
     }
+  }
+
+  void setGap(float _g) {
+    gap = _g;
   }
 }

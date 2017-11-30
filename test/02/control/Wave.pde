@@ -68,8 +68,8 @@ class WaterWave {
   PGraphics canvas;
   int index;
   int w;
-  float start = -20;
-  float end = 1000;
+  float start = -100;
+  float end = 1100;
 
   WaterWave(int _i, PGraphics _c, float _yo, float _yp) {
     index = _i;

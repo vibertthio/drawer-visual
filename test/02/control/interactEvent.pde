@@ -21,87 +21,94 @@ void noteOn(int channel, int pitch, int velocity) {
       }
       switch(pitch) {
         case 0:
-        recs_1[0].reset();
-        recs_1[0].start();
-        break;
+          recs_1[0].reset();
+          recs_1[0].start();
+          break;
         case 1:
-        recs_1[1].reset();
-        recs_1[1].start();
-        break;
+          recs_1[1].reset();
+          recs_1[1].start();
+          break;
         case 2:
-        recs_1[0].start();
-        recs_1_state[0] = true;
-        break;
+          recs_1[0].start();
+          recs_1_state[0] = true;
+          break;
         case 3:
-        recs_1[1].start();
-        recs_1_state[1] = true;
-        break;
+          recs_1[1].start();
+          recs_1_state[1] = true;
+          break;
 
         case 4:
-        resetRecs_2();
-        recs_2[0].start();
-        break;
+          resetRecs_2();
+          recs_2[0].start();
+          break;
         case 5:
-        resetRecs_2();
-        recs_2[5].start();
-        break;
+          resetRecs_2();
+          recs_2[5].start();
+          break;
 
         case 8:
-        recs_3[0].hdes = 0;
-        break;
+          recs_3[0].hdes = 0;
+          break;
         case 9:
-        recs_3[0].hdes = 2;
-        break;
+          recs_3[0].hdes = 2;
+          break;
         case 10:
-        recs_3[0].hdes = pg.height;
-        break;
+          recs_3[0].hdes = pg.height;
+          break;
 
 
         case 16:
-        waves.visible = !waves.visible;
-        break;
+          waves.visible = !waves.visible;
+          break;
         case 17:
-        movingLines.trigger(40, 5);
-        break;
+          movingLines.trigger(40, 5);
+          break;
         case 18:
-        movingLines.trigger(40, -5);
-        break;
+          movingLines.trigger(40, -5);
+          break;
 
 
 
         case 24:
-        verticalLines.visible = !verticalLines.visible;
-        break;
+          verticalLines.visible = !verticalLines.visible;
+          break;
         case 25:
-        if (!verticalLines.random) {
-          verticalLines.random = true;
-        } else {
-          verticalLines.reset();
-        }
-        break;
-        case 26:
-        verticalLines.glitch = !verticalLines.glitch;
-        break;
+          if (!verticalLines.random) {
+            verticalLines.random = true;
+          } else {
+            verticalLines.reset();
+          }
+          break;
+        case 32:
+          verticalLines.randAlpha();
+          break;
+        case 33:
+          verticalLines.uniAlpha();
+          break;
         case 27:
-        verticalLines.queue();
-        break;
+          verticalLines.queue();
+          break;
+
         case 28:
-        lines.visible = !lines.visible;
-        break;
+          lines.visible = !lines.visible;
+          break;
         case 29:
-        lines.yUpdateSpd = 0.1;
-        if (!lines.random) {
-          lines.random = true;
-        } else {
-          lines.reset();
-        }
-        break;
-        case 30:
-        lines.glitch = !lines.glitch;
-        break;
+          lines.yUpdateSpd = 0.1;
+          if (!lines.random) {
+            lines.random = true;
+          } else {
+            lines.reset();
+          }
+          break;
+        case 36:
+          lines.randAlpha();
+          break;
+        case 37:
+          lines.uniAlpha();
+          break;
         case 31:
-        lines.queue();
-        break;
+          lines.queue();
+          break;
 
       }
     } else if (chan == 1) {
@@ -203,11 +210,25 @@ void controllerChange(int channel, int number, int value) {
   if (!three) {
     if (channel == 0) {
       switch(number) {
+        case 7:
+          shaderBlinkAmount = map(value, 0, 127, 0, 1);
+          break;
+
         case 16:
           waves.setBand(map(value, 0, 127, 0, pg.height - 900));
           break;
         case 17:
-          waves.setAmp(map(value, 0, 127, 0, 250));
+          waves.setAmp(map(value, 0, 127, 5, 250));
+          break;
+        case 18:
+          waves.setYPos(map(value, 0, 127, -pg.height * 0.9, pg.height * 0.9));
+          break;
+
+        case 20:
+          lines.yUpdateSpd = map(value, 0, 127, 0, 0.03);
+          break;
+        case 21:
+          verticalLines.yUpdateSpd = map(value, 0, 127, 0, 0.03);
           break;
       }
     }
@@ -215,7 +236,7 @@ void controllerChange(int channel, int number, int value) {
     if (channel == 0) {
       switch(number) {
         case 16:
-
+          water.setGap(map(value, 0, 127, 0, -100));
           break;
         case 17:
           water.setAmp(map(value, 0, 127, 0, 250));
