@@ -1,17 +1,17 @@
-float mouseControl;
 class Waves {
   int nOfW = 20;
   ArrayList<Wave> waves;
   PGraphics pg;
-  boolean visible = false;
+  float ypos = 0;
+  float band = 200;
+  boolean visible = true;
 
   Waves(PGraphics _p) {
     pg = _p;
     waves = new  ArrayList<Wave>();
-    float band = 600;
     float h = (pg.height - band);
     for (int i = 0; i < nOfW; i++) {
-      float y = (h * (i + 0.5)) / nOfW + band * 0.5;
+      float y = (band * (i + 0.5)) / nOfW + h * 0.5;
       waves.add(new Wave(i, pg, y * 0.01, y));
     }
   }
@@ -22,18 +22,15 @@ class Waves {
     }
   }
   void update() {
-    mouseControl = map(mouseY, 0, pg.height, 0, 0.01);
-    // mouseControl = 0;
-    pg.beginDraw();
+    // pg.beginDraw();
     pg.background(0);
     for (int i = 0; i < nOfW; i++) {
       waves.get(i).draw();
     }
-    pg.endDraw();
+    // pg.endDraw();
   }
   void render() {
-    tint(255, 20);
-    image(pg, 0, 0);
+    // pgout.image(pg, 0, 0);
   }
 
   void setAmp(float value) {
@@ -41,11 +38,73 @@ class Waves {
       waves.get(i).amp = value;
     }
   }
-  void setBand(float band) {
+  void setBand(float _b) {
+    band = _b;
     float h = (pg.height - band);
     for (int i = 0; i < nOfW; i++) {
       float y = (band * (i + 0.5)) / nOfW + h * 0.5;
       waves.get(i).ypos = y;
+    }
+  }
+  void setYPos(float _ypos) {
+    ypos = _ypos;
+  }
+}
+
+
+class Water {
+  int nOfW = 20;
+  ArrayList<WaterWave> waves;
+  PGraphics pg;
+  float band = 0;
+  float ypos = 300;
+
+  Water(PGraphics _p) {
+    pg = _p;
+    waves = new ArrayList<WaterWave>();
+    float h = (pg.height - band);
+    for (int i = 0; i < nOfW; i++) {
+      float y = (h * (i + 0.5)) / nOfW + band * 0.5;
+      waves.add(new WaterWave(i, pg, y * 0.01, ypos));
+    }
+  }
+  void draw() {
+    update();
+    render();
+  }
+  void update() {
+    // pg.beginDraw();
+    // pg.background(0);
+
+    for (int i = 0; i < nOfW; i++) {
+      waves.get(i).draw();
+      pg.translate(0, 0, -50);
+    }
+    // pg.endDraw();
+  }
+  void render() {
+
+  }
+
+  void setAmp(float value) {
+    for (int i = 0; i < nOfW; i++) {
+      waves.get(i).amp = value;
+    }
+  }
+  void setBand(float _b) {
+    band = _b;
+    float h = (pg.height - band);
+    for (int i = 0; i < nOfW; i++) {
+      float y = (h * (i + 0.5)) / nOfW + band * 0.5;
+      waves.get(i).ypos = y;
+    }
+  }
+  void setYPos(float _ypos) {
+    ypos = _ypos;
+    float h = (pg.height - band);
+    for (int i = 0; i < nOfW; i++) {
+      float y = (h * (i + 0.5)) / nOfW + band * 0.5;
+      waves.get(i).ypos = ypos;
     }
   }
 }

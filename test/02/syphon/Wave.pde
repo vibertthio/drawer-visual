@@ -24,7 +24,7 @@ class Wave {
 
   void render() {
     canvas.stroke(255, 255);
-    canvas.strokeWeight(2);
+    canvas.strokeWeight(1);
     canvas.noFill();
     canvas.beginShape();
 
@@ -57,6 +57,5 @@ class Wave {
     // vertex(0, height);
     canvas.endShape();
   }
-
 
 }

@@ -2,13 +2,16 @@ import codeanticode.syphon.*;
 import themidibus.*;
 
 PGraphics pg;
+PGraphics pg3d;
 PGraphics pgout;
 PShader shade;
+PShader shade3d;
 SyphonServer server;
 MidiBus midi;
 int state = 4;
 int stateLimit = 4;
 boolean on = true;
+boolean three = true;
 boolean usingShader = true;
 
 // universal
@@ -28,6 +31,7 @@ Rectangle[] recs_3;
 
 // state : 3
 Waves waves;
+Water water;
 
 // state : 4
 Lines lines;
@@ -35,7 +39,8 @@ Lines verticalLines;
 
 // basic
 void settings() {
-  size(1280, 380, P2D);
+  // size(1280, 380, P2D);
+  size(960, 384, P2D);
   PJOGL.profile=1;
 }
 void setup() {
@@ -43,28 +48,15 @@ void setup() {
   rectanglesInit();
   wavesInit();
   linesInit();
+  threeInit();
 }
 void draw() {
-  if (on) {    
-    pg.beginDraw();
-    pg.background(0);
-    // testDraw();
-    generalDraw();
-    rectanglesUpdate();
-    rectanglesDraw();
-    wavesDraw();
-    linesDraw();
-    pg.endDraw();
-
-    pgout.beginDraw();
-    if (usingShader) {
-      shaderUpdate();
-      pgout.shader(shade);
+  if (on) {
+    if (!three) {
+      twoDraw();
+    } else {
+      threeDraw();
     }
-    tintUpdate();
-    pgout.image(pg, 0, 0);
-    pgout.resetShader();
-    pgout.endDraw();
 
     image(pgout, 0, 0);
     server.sendImage(pgout);
@@ -82,10 +74,12 @@ void tintUpdate() {
 void generalInit() {
   // pg = createGraphics(1920, 380);
   // pgout = createGraphics(1920, 380, P2D);
-  pg = createGraphics(1280, 380);
-  pgout = createGraphics(1280, 380, P2D);
+  pg = createGraphics(width, height);
+  pg3d = createGraphics(width, height, P3D);
+  pgout = createGraphics(width, height, P2D);
   server = new SyphonServer(this, "Processing Syphon");
   midi = new MidiBus(this, "APC40 mkII", -1);
+  // midi = new MidiBus(this, -1, -1);
   shaderSetup();
 
   movingLines = new MovingLines(pg);
@@ -96,17 +90,16 @@ void generalInit() {
   srec[3] = new StaticRectangles(pg, 3);
 }
 void shaderSetup() {
-  // shade = loadShader("blur.glsl");
-  // shade.set("offset", 0.1, 0.1);
-
-  // shade = loadShader("blur_2.glsl");
-  // shade.set("texOffset", 1.0, 1.0);
-  // shade.set("blurSize", 20);
-  // shade.set("horizontalPass", 1);
-  // shade.set("sigma", 2.5);
-
   shade = loadShader("neon.glsl");
   shade.set("rad", 2);
+
+  shade3d = loadShader("channels.glsl");
+  shade3d.set("rbias", 0.005, 0.0);
+  shade3d.set("gbias", 0.0, 0.0);
+  shade3d.set("bbias", 0.0, 0.0);
+  shade3d.set("rmult", 1.0, 1.0);
+  shade3d.set("gmult", 1.0, 1.0);
+  shade3d.set("bmult", 1.0, 1.0);
 }
 void shaderUpdate() {
   shade.set("time", millis());
@@ -121,6 +114,44 @@ void generalDraw() {
   for (int i = 0; i < srec.length; i++) {
     srec[i].draw();
   }
+}
+void twoDraw() {
+  pg.beginDraw();
+  pg.background(0);
+  // testDraw();
+  generalDraw();
+  rectanglesUpdate();
+  rectanglesDraw();
+  wavesDraw();
+  linesDraw();
+  pg.endDraw();
+
+  pgout.beginDraw();
+  if (usingShader) {
+    shaderUpdate();
+    pgout.shader(shade);
+  }
+  tintUpdate();
+  pgout.image(pg, 0, 0);
+  pgout.resetShader();
+  pgout.endDraw();
+}
+void threeInit() {
+  water = new Water(pg3d);
+}
+void threeDraw() {
+  pg3d.beginDraw();
+  pg3d.background(0);
+  // pg3d.translate(pg3d.width * 0.5, pg3d.height * 0.5);
+  // pg3d.sphere(50);
+  water.draw();
+  pg3d.endDraw();
+
+  pgout.beginDraw();
+  pgout.shader(shade3d);
+  pgout.image(pg3d, 0, 0);
+  pgout.resetShader();
+  pgout.endDraw();
 }
 
 // recs
@@ -211,7 +242,7 @@ void rectanglesDraw() {
 // waves
 void wavesInit() {
   waves = new Waves(pg);
-  waves.setAmp(0);
+  // waves.setAmp(0);
 }
 void wavesDraw() {
   waves.draw();
@@ -220,7 +251,6 @@ void wavesDraw() {
   // }
 }
 void wavesInteract() {
-  float band = 600;
   waves.setAmp(map(mouseY, 0, height, 0, 250));
   waves.setBand(map(mouseX, 0, width, 0, pg.height - 900));
 }
