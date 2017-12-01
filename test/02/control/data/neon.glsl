@@ -18,7 +18,7 @@ void main(void) {
   int j = 0;
   vec4 sum = vec4(0.0);
 
-  float br = amt * 0.2 * sin(float(time) / 300.0) * sin(float(time) / 300.0);
+  float br = amt * 0.2 * sin(float(time) / 1000.0) * sin(float(time) / 1000.0);
 
   for( i=-rad;i<rad;i++) {
     for( j=-rad;j<rad;j++) {

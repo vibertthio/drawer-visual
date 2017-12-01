@@ -82,7 +82,7 @@ class Lines {
   }
   void uniAlpha() {
     for (int i = 0; i < nOfL; i++) {
-      lines[i].alpha = map(shaderBlinkAmount, 0, 1, 0, 200);
+      lines[i].alpha = map(shaderBlinkAmount, 0, 1, 0, 255);
     }
   }
   void randAlpha() {
