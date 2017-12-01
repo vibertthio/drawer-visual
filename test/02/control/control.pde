@@ -1,5 +1,7 @@
 import codeanticode.syphon.*;
 import themidibus.*;
+import oscP5.*;
+import netP5.*;
 
 PGraphics pg;
 PGraphics pg3d;
@@ -14,6 +16,10 @@ boolean on = true;
 boolean three = true;
 boolean usingShader = true;
 float shaderBlinkAmount = 1;
+
+// oscP5
+OscP5 oscP5;
+NetAddress myRemoteLocation;
 
 // universal
 MovingLines movingLines;
@@ -81,6 +87,9 @@ void generalInit() {
   pgout = createGraphics(width, height, P2D);
   server = new SyphonServer(this, "Processing Syphon");
   midi = new MidiBus(this, "APC40 mkII", -1);
+  oscP5 = new OscP5(this,7575);
+  myRemoteLocation = new NetAddress("127.0.0.1", 7002);
+
   // midi = new MidiBus(this, -1, -1);
   shaderSetup();
 

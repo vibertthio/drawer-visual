@@ -2,13 +2,16 @@ int chan = 0;
 
 void noteOn(int channel, int pitch, int velocity) {
   // Receive a noteOn
-  println("--------");
-  println("Note On:");
-  println("Channel:"+channel);
-  println("Pitch:"+pitch);
-  println("Velocity:"+velocity);
+  // println("--------");
+  // println("Note On:");
+  // println("Channel:"+channel);
+  // println("Pitch:"+pitch);
+  // println("Velocity:"+velocity);
   if (channel == 0 && pitch == 81) {
     on = !on;
+  }
+  if (channel == 0 && pitch == 85) {
+    usingShader = !usingShader;
   }
   if (channel == 0 && pitch == 86) {
     three = !three;
@@ -183,8 +186,30 @@ void noteOn(int channel, int pitch, int velocity) {
         srec[3].turnOneOnEasingFor(800, 6);
         srec[3].turnOneOnEasingFor(800, 7);
         break;
+      }
+
+    } else if (chan == 2) {
+      waves.visible = false;
+      switch(pitch) {
+        case 0:
+          waves.visible = true;
+          break;
+        case 8:
+          resetRecs_1();
+          recs_1[0].reset();
+          recs_1[0].start();
+          break;
+        case 9:
+          resetRecs_1();
+          recs_1[1].reset();
+          recs_1[1].start();
+          break;
+        case 16:
+          srec[0].triggerRandBlink();
+          break;
 
       }
+
     }
   } else {
     // three
@@ -202,11 +227,11 @@ void noteOff(int channel, int pitch, int velocity) {
 
 void controllerChange(int channel, int number, int value) {
   // Receive a controllerChange
-  println("--------");
-  println("Controller Change:");
-  println("Channel:"+channel);
-  println("Number:"+number);
-  println("Value:"+value);
+  // println("--------");
+  // println("Controller Change:");
+  // println("Channel:"+channel);
+  // println("Number:"+number);
+  // println("Value:"+value);
   if (!three) {
     if (channel == 0) {
       switch(number) {
@@ -247,7 +272,12 @@ void controllerChange(int channel, int number, int value) {
       }
     }
   }
-
+  if (channel == 0 && number == 48) {
+    // println("send osc");
+    OscMessage msg = new OscMessage("/activeclip/video/param7/values");
+    msg.add(value);
+    oscP5.send(msg, myRemoteLocation);
+  }
   if (number == 23) {
     chan = channel;
   }
