@@ -42,7 +42,7 @@ void drawGeometry(PGraphics src) {
   src.background(0);
   src.lights();
   src.translate(width / 2, height / 2);
-  src.rotateY(frameCount * 0.005f);
+  // src.rotateY(frameCount * 0.005f);
   src.stroke(255, 0, 0);
   src.noStroke();
   src.sphere(200);
